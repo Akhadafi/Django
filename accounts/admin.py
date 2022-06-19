@@ -23,8 +23,14 @@ class ProductAdmin(admin.ModelAdmin):
     ]
 
 
+class TagAdmin(admin.ModelAdmin):
+    list_display = ["name"]
+
+
 class OrderAdmin(admin.ModelAdmin):
     list_display = [
+        "customer",
+        "product",
         "date_created",
         "status",
     ]
@@ -33,3 +39,4 @@ class OrderAdmin(admin.ModelAdmin):
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Order, OrderAdmin)
+admin.site.register(Tag, TagAdmin)
