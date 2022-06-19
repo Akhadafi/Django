@@ -4,12 +4,12 @@ from django.shortcuts import render
 
 # Create your views here.
 def home(request):
-    return HttpResponse("Hello, world. You're at the accounts home.")
+    return render(request, "accounts/dashboard.html")
 
 
 def products(request):
-    return HttpResponse("Hello, world. You're at the accounts products.")
+    return render(request, "accounts/products.html")
 
 
 def customer(request):
-    return HttpResponse("Hello, world. You're at the accounts customer.")
+    return render(request, "accounts/customer.html")
