@@ -20,4 +20,13 @@
       </div>
     </div>
   </div>
+
+  <span class="text-light">
+    Hello,<span class="text-warning">{{request.user}}</span>
+  </span>
+  <span>
+    <a href="{% url 'logout' %}" class="btn btn-sm btn-outline-light mx-3">
+      Logout
+    </a>
+  </span>
 </nav>
