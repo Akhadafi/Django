@@ -31,6 +31,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = [
         "customer",
         "product",
+        "note",
         "date_created",
         "status",
     ]
