@@ -76,10 +76,27 @@ WSGI_APPLICATION = "crm.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+"""
+STEPS FOR DJANGO POSTGRESQL + AWS RDS
+
+1 - Dawnload and install PostgreSQL & PG ADMIN
+2 - Login to PG Adminn & Create Database
+3 - Connect database to Django App & run migrations
+4 - Create database on AWS
+5 - Connect to live AWS Database with PG admin & Django
+"""
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
+        # POSTGRESQL
+        # "ENGINE": "django.db.backends.postgresql",
+        # "NAME": "",
+        # "USER": "",
+        # "PASSWORD": "",
+        # "HOST": "",
+        # "PORT": "",
     }
 }
 
