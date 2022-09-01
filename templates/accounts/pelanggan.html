@@ -1,40 +1,36 @@
 {% extends 'main.html' %}
-
 <!-- Content -->
 {% block content %}
-<br />
-
 <div class="row">
   <div class="col-md">
     <div class="card card-body">
-      <h5>Customer:</h5>
+      <h5>Pelanggan:</h5>
       <hr />
       <a href="" class="btn btn-outline-info btn-sm d-grid mb-2"
-        >Update Customer</a
+        >Perbarui Pelanggan</a
       >
       <a
-        href="{% url 'create_order' customer.id %}"
+        href="{% url 'tambah_pemesan' pelanggan.id %}"
         class="btn btn-outline-info btn-sm d-grid"
+        >Tempat Menampung</a
       >
-        Place Older
-      </a>
     </div>
   </div>
 
   <div class="col-md">
     <div class="card card-body">
-      <h5>Contact Information:</h5>
+      <h5>Informasi Kontak:</h5>
       <hr />
-      <p>Email: {{customer.email}}</p>
-      <p>Phone: {{customer.phone}}</p>
+      <p>Email: {{ pelanggan.email }}</p>
+      <p>No HP: {{ pelanggan.no_hp }}</p>
     </div>
   </div>
 
   <div class="col-md">
     <div class="card card-body">
-      <h5>Total Orders:</h5>
+      <h5>Total Pemesanan:</h5>
       <hr />
-      <h1 style="text-align: center; padding: 10px">{{order_count}}</h1>
+      <h1 style="text-align: center; padding: 10px">{{ total_produk }}</h1>
     </div>
   </div>
 </div>
@@ -44,8 +40,8 @@
   <div class="col">
     <div class="card card-body">
       <form action="" method="get">
-        <button class="btn btn-primary" type="submit">Search</button>
-        {{ myFilter.form }}
+        {{ myFilter.form.as_p }}
+        <button class="btn btn-primary" type="submit">Cari</button>
       </form>
     </div>
   </div>
@@ -57,34 +53,32 @@
     <div class="card card-body">
       <table class="table table-sm">
         <tr>
-          <th>Product</th>
-          <th>Note</th>
-          <th>Date Orderd</th>
+          <th>Produk</th>
+          <th>Catatan</th>
+          <th>Tanggal Pesan</th>
           <th>Status</th>
-          <th>Update</th>
-          <th>Remove</th>
+          <th>Perbarui</th>
+          <th>Hapus</th>
         </tr>
-        {% for order in orders %}
+        {% for memesan in memesan %}
         <tr>
-          <td>{{order.product}}</td>
-          <td>{{order.note}}</td>
-          <td>{{order.date_created}}</td>
-          <td>{{order.status}}</td>
+          <td>{{ memesan.produk }}</td>
+          <td>{{ memesan.note }}</td>
+          <td>{{ memesan.tanggaldibuat|date }}</td>
+          <td>{{ memesan.status }}</td>
           <td>
             <a
-              href="{% url 'update_order' order.id %}"
+              href="{% url 'perbarui_pemesan' memesan.id %}"
               class="btn btn-sm btn-info"
+              >Perbarui</a
             >
-              Update
-            </a>
           </td>
           <td>
             <a
-              href="{% url 'delete_order' order.id %}"
+              href="{% url 'hapus_pemesan' memesan.id %}"
               class="btn btn-sm btn-danger"
+              >Hapus</a
             >
-              Delete
-            </a>
           </td>
         </tr>
         {% endfor %}
@@ -92,4 +86,4 @@
     </div>
   </div>
 </div>
-{% endblock content %}
+{% endblock %}

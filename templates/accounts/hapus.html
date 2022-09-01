@@ -1,0 +1,18 @@
+{% extends 'main.html' %}
+<!--  -->
+{% block content %}
+<div class="row">
+  <div class="col-md-6">
+    <div class="card card-body">
+      <p>Yakin untuk menghapus "{{item}}?"</p>
+      <form action="{% url 'hapus_pemesan' item.id %}" method="POST">
+        {% csrf_token %}
+        <a href="{{request.META.HTTP_REFERER}}" class="btn btn-sm btn-warning"
+          >Kembali</a
+        >
+        <input class="btn btn-sm btn-danger" type="submit" value="Hapus" />
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

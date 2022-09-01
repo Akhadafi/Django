@@ -1,9 +1,6 @@
 {% extends 'main.html' %}
-
-<!-- Content -->
+<!--  -->
 {% block content %}
-<br />
-
 <div class="row">
   <div class="col-md">
     <div class="card card-body mb-1">
@@ -12,20 +9,19 @@
     <div class="card card-body">
       <table class="table">
         <tr>
-          <th>Product</th>
-          <th>Category</th>
-          <th>Price</th>
+          <th>Produk</th>
+          <th>Kategori</th>
+          <th>Harga</th>
         </tr>
-        {% for product in products %}
-        <!-- Item -->
+        {% for produk in produk %}
         <tr>
-          <td>{{ product.name }}</td>
-          <td>{{ product.category }}</td>
-          <td>{{ product.price }}</td>
+          <td>{{ produk.nama }}</td>
+          <td>{{ produk.kategori }}</td>
+          <td>{{ produk.harga }}</td>
         </tr>
         {% endfor %}
       </table>
     </div>
   </div>
 </div>
-{% endblock content %}
+{% endblock %}

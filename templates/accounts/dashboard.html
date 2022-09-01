@@ -1,0 +1,71 @@
+{% extends 'main.html' %}
+<!--  -->
+{% block content %}
+<!--  -->
+{% include 'accounts/status.html' %}
+<hr />
+<div class="row">
+  <div class="col-md-5 mb-3">
+    <h5>PELANGGAN:</h5>
+    <div class="card card-body">
+      <a href="" class="btn btn-primary btn-sm d-grid">Buat Pelanggan</a>
+      <table class="table table-sm">
+        <tr>
+          <th></th>
+          <th>Pelanggan</th>
+          <th>Nomor HP</th>
+        </tr>
+        {% for pelanggan in pelanggan %}
+        <tr>
+          <td>
+            <a
+              href="{% url 'pelanggan' pelanggan.id %}"
+              class="btn btn-sm btn-info"
+              >Lihat</a
+            >
+          </td>
+          <td>{{ pelanggan.nama }}</td>
+          <td>{{ pelanggan.no_hp }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+
+  <div class="col-md-7">
+    <h5>5 PESANAN TERBARU:</h5>
+    <div class="card card-body">
+      <table class="table table-sm">
+        <tr>
+          <th>Produk</th>
+          <th>Tanggal Memesan</th>
+          <th>Status</th>
+          <th>Perbarui</th>
+          <th>Hapus</th>
+        </tr>
+        {% for pemesan in memesan %}
+        <tr>
+          <td>{{ pemesan.produk.nama }}</td>
+          <td>{{ pemesan.tanggaldibuat|date }}</td>
+          <td>{{ pemesan.status }}</td>
+          <td>
+            <a
+              href="{% url 'perbarui_pemesan' pemesan.id %}"
+              class="btn btn-sm btn-info"
+              >Perbarui</a
+            >
+          </td>
+          <td>
+            <a
+              href="{% url 'hapus_pemesan' pemesan.id %}"
+              class="btn btn-sm btn-danger"
+              >Hapus</a
+            >
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

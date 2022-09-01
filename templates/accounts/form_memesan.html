@@ -1,9 +1,6 @@
 {% extends 'main.html' %}
-<!-- Static -->
-{% load static %}
-<!-- Content -->
+<!--  -->
 {% block content %}
-<br />
 <div class="row">
   <div class="col-md-6">
     <div class="card card-body">
@@ -12,7 +9,9 @@
         <!--  -->
         {{ formset.management_form }}
         <!--  -->
-        {% for form in formset %} {{form}}
+        {% for form in formset %}
+        <!--  -->
+        {{ form }}
         <hr />
         {% endfor %}
         <input type="submit" name="Submit" />

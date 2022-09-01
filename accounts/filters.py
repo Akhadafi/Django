@@ -1,15 +1,14 @@
 import django_filters
-from django_filters import CharFilter, DateFilter
-
-from .models import *
+from accounts.models import *
+from django_filters import DateFilter, CharFilter
 
 
 class OrderFilter(django_filters.FilterSet):
-    satart_date = DateFilter(field_name="date_created", lookup_expr="gte")
-    end_date = DateFilter(field_name="date_created", lookup_expr="lte")
-    note = CharFilter(field_name="note", lookup_expr="icontains")
+    tanggal_mulai = DateFilter(field_name="tanggaldibuat", lookup_expr="gte")
+    tanggal_akhir = DateFilter(field_name="tanggaldibuat", lookup_expr="lte")
+    catatan = CharFilter(field_name="note", lookup_expr="icontains")
 
     class Meta:
         model = Order
         fields = "__all__"
-        exclude = ["customer", "date_created"]
+        exclude = ["pelanggan", "tanggaldibuat"]

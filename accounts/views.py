@@ -1,178 +1,84 @@
-from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group
+from django.shortcuts import render, redirect
+from accounts.models import *
+from accounts.forms import OrderForm
 from django.forms import inlineformset_factory
-from django.shortcuts import redirect, render
-
-from .decorators import admin_only, allowed_users, unauthenticated_user
-from .filters import OrderFilter
-from .forms import CreateUserForm, CustomerForm, OrderForm
-from .models import *
+from accounts.filters import OrderFilter
 
 
-# Create your views here.
-@unauthenticated_user
-def registerPage(request):
-    form = CreateUserForm()
-    if request.method == "POST":
-        form = CreateUserForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            username = form.cleaned_data.get("username")
-            # group = Group.objects.get(name="customer")
-            # user.groups.add(group)
-            # Customer.objects.create(
-            #     user=user,
-            #     name=user.username,
-            # )
-            messages.success(request, "Account was created for " + username)
-            return redirect("login")
+def index(request):
+    memesan = Order.objects.all()
+    pelanggan = Customer.objects.all()
+    total_pelanggan = pelanggan.count()
+    total_memesan = memesan.count()
+    terkirim = memesan.filter(status="Terkirim").count()
+    tertunda = memesan.filter(status="Tertunda").count()
     context = {
-        "form": form,
-    }
-    return render(request, "accounts/register.html", context)
-
-
-@unauthenticated_user
-def loginPage(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect("home")
-        else:
-            messages.info(request, "Username or Password is incorrect")
-    context = {}
-    return render(request, "accounts/login.html", context)
-
-
-def logoutUser(request):
-    logout(request)
-    return redirect("login")
-
-
-@login_required(login_url="login")
-@admin_only
-def home(request):
-    # Customer
-    customers = Customer.objects.all()
-    total_customers = customers.count()
-    # Order
-    orders = Order.objects.all()
-    total_oreders = orders.count()
-    delivered = orders.filter(status="Delivered").count()
-    pending = orders.filter(status="Pending").count()
-
-    context = {
-        # Customer
-        "customers": customers,
-        "total_customers": total_customers,
-        # Order
-        "orders": orders,
-        "total_oreders": total_oreders,
-        "delivered": delivered,
-        "pending": pending,
+        "pelanggan": pelanggan,
+        "memesan": memesan,
+        "total_memesan": total_memesan,
+        "total_pelanggan": total_pelanggan,
+        "terkirim": terkirim,
+        "tertunda": tertunda,
     }
     return render(request, "accounts/dashboard.html", context)
 
 
-@login_required(login_url="login")
-@allowed_users(allowed_roles=["customer"])
-def userPage(request):
-    orders = request.user.customer.order_set.all()
-
-    total_oreders = orders.count()
-    delivered = orders.filter(status="Delivered").count()
-    pending = orders.filter(status="Pending").count()
+def produk(request):
+    produk = Product.objects.all()
     context = {
-        "orders": orders,
-        "total_oreders": total_oreders,
-        "delivered": delivered,
-        "pending": pending,
+        "produk": produk,
     }
-    return render(request, "accounts/user.html", context)
+    return render(request, "accounts/produk.html", context)
 
 
-@login_required(login_url="login")
-@allowed_users(allowed_roles=["customer"])
-def accountSettings(request):
-    customer = request.user.customer
-    form = CustomerForm(instance=customer)
-    if request.method == "POST":
-        form = CustomerForm(request.POST, request.FILES, instance=customer)
-        if form.is_valid():
-            form.save()
-    context = {"form": form}
-    return render(request, "accounts/account_settings.html", context)
-
-
-@login_required(login_url="login")
-@allowed_users(allowed_roles=["admin"])
-def products(request):
-    products = Product.objects.all()
-    context = {"products": products}
-    return render(request, "accounts/products.html", context)
-
-
-@login_required(login_url="login")
-@allowed_users(allowed_roles=["admin"])
-def customer(request, pk):
-    customer = Customer.objects.get(id=pk)
-    orders = customer.order_set.all()
-    order_count = orders.count()
-    myFilter = OrderFilter(request.GET, queryset=orders)
-    orders = myFilter.qs
+def pelanggan(request, pk):
+    pelanggan = Customer.objects.get(id=pk)
+    memesan = pelanggan.order_set.all()
+    total_produk = memesan.count()
+    myFilter = OrderFilter(request.GET, queryset=memesan)
+    memesan = myFilter.qs
     context = {
-        "customer": customer,
-        "orders": orders,
-        "order_count": order_count,
+        "pelanggan": pelanggan,
+        "memesan": memesan,
+        "total_produk": total_produk,
         "myFilter": myFilter,
     }
-    return render(request, "accounts/customer.html", context)
+    return render(request, "accounts/pelanggan.html", context)
 
 
-@login_required(login_url="login")
-@allowed_users(allowed_roles=["admin"])
-def createOrder(request, pk):
+def tambah_pemesan(request, pk):
     OrderFormSet = inlineformset_factory(
-        Customer, Order, fields=("product", "status"), extra=5
+        Customer, Order, fields=("produk", "status"), extra=8
     )
-    customer = Customer.objects.get(id=pk)
-    formset = OrderFormSet(queryset=Order.objects.none(), instance=customer)
-    # form = OrderForm(initial={"customer": customer})
+    pelanggan = Customer.objects.get(id=pk)
+    formset = OrderFormSet(queryset=Order.objects.none(), instance=pelanggan)
+    # form = OrderForm(initial={"pelanggan": pelanggan})
     if request.method == "POST":
         # form = OrderForm(request.POST)
-        formset = OrderFormSet(request.POST, instance=customer)
+        formset = OrderFormSet(request.POST, instance=pelanggan)
         if formset.is_valid():
             formset.save()
-            return redirect("/")
+            return redirect("dashboard")
     context = {"formset": formset}
-    return render(request, "accounts/order_form.html", context)
+    return render(request, "accounts/form_memesan.html", context)
 
 
-@login_required(login_url="login")
-@allowed_users(allowed_roles=["admin"])
-def updateOrder(request, pk):
-    order = Order.objects.get(id=pk)
-    form = OrderForm(instance=order)
+def perbarui_pemesan(request, pk):
+    memesan = Order.objects.get(id=pk)
+    form = OrderForm(instance=memesan)
     if request.method == "POST":
-        form = OrderForm(request.POST, instance=order)
+        form = OrderForm(request.POST, instance=memesan)
         if form.is_valid():
             form.save()
-            return redirect("/")
+            return redirect("dashboard")
     context = {"form": form}
-    return render(request, "accounts/order_form.html", context)
+    return render(request, "accounts/form_memesan.html", context)
 
 
-@login_required(login_url="login")
-@allowed_users(allowed_roles=["admin"])
-def deleteOrder(request, pk):
-    order = Order.objects.get(id=pk)
+def hapus_pemesan(request, pk):
+    memesan = Order.objects.get(id=pk)
     if request.method == "POST":
-        order.delete()
-        return redirect("/")
-    context = {"item": order}
-    return render(request, "accounts/delete.html", context)
+        memesan.delete()
+        return redirect("dashboard")
+    context = {"item": memesan}
+    return render(request, "accounts/hapus.html", context)
